@@ -1,2 +1,2 @@
 # bugzilla-crawler
-A Java based Bugzilla crawler that can download all bugs and their respective patches of a software.
+A Java based Bugzilla crawler that can download all bugs and respective patches of a software.
