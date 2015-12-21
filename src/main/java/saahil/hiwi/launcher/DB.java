@@ -61,7 +61,7 @@ public class DB {
 
   public void saveDiff(Bug bug, int i) throws SQLException {
     String sql =
-        "INSERT INTO  `CRAWLER`.`Diffs` " + "(`BUG_ID`,`DIFF_ID`,`DIFF`) VALUES " + "(?,?,?);";
+        "INSERT INTO  `CRAWLER`.`DIFFS` " + "(`BUG_ID`,`DIFF_ID`,`DIFF`) VALUES " + "(?,?,?);";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
     stmt.setInt(2, bug.getPatches().get(i).getId());
