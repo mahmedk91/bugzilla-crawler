@@ -16,6 +16,8 @@ public class Launcher {
   public static void main(String[] args) throws SQLException, IOException {
     System.setProperty("javax.net.ssl.trustStore", Config.SSL_TRUSTSTORE);
     db.runSql2("TRUNCATE Record;");
+    // For SQLite
+    // db.runSql2("DELETE FROM record;");
     String csvFile;
     String baseURL;
     if (args.length < 2) {
