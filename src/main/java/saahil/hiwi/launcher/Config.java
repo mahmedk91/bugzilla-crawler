@@ -7,7 +7,7 @@ public class Config {
    * By default java uses cacert truststore with password "changeit". cacert is located in
    * "jdk&lt;version&gt;\jre\lib\security"<br>
    * Download the target site SSL certificate via Chrome/Firefox and add it to keystore using - <br>
-   * <b>keytool -import -alias "susan" -file "Example.cer" -keystore "cacerts"</b><br>
+   * <b>keytool -import -alias "&lt;alias_name&gt;" -file "Example.cer" -keystore "&lt;path to jdk&gt;/jdk&lt;version&gt;/jre/lib/security/cacerts"</b><br>
    * Keytool program is located in jdk&lt;version&gt;\bin
    */
   public static final String SSL_TRUSTSTORE =
@@ -32,7 +32,7 @@ public class Config {
   /**
    * Name of Database.
    */
-  public static final String DB_NAME = "crawler";
+  public static final String DB_NAME = "CRAWLER";
 
   /**
    * Name of database user

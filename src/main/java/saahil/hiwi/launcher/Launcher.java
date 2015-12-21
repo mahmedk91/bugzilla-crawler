@@ -31,14 +31,9 @@ public class Launcher {
       baseURL = args[1];
     }
     db.importBugs(csvFile, baseURL);
-    ResultSet bugs =
-        db.runSql("SELECT BUG_ID FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT='"
-            + baseURL + "';");
-    ResultSet totalBugsCount = db.runSql(
-        "SELECT COUNT(*) AS TOTAL_BUGS FROM BUGS WHERE BUGZILLA_PRODUCT='" + baseURL + "';");
-    ResultSet pendingBugsCount = db.runSql(
-        "SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT='"
-            + baseURL + "';");
+    ResultSet bugs = db.getPendingBugs(baseURL);
+    ResultSet totalBugsCount = db.getTotalBugsCount(baseURL);
+    ResultSet pendingBugsCount = db.getPendingBugsCount(baseURL);
     pendingBugsCount.next();
     totalBugsCount.next();
     totalPendingBugs = totalBugsCount.getInt("TOTAL_BUGS");

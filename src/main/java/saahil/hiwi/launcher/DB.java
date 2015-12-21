@@ -35,11 +35,6 @@ public class DB {
     }
   }
 
-  public ResultSet runSql(String sql) throws SQLException {
-    Statement sta = conn.createStatement();
-    return sta.executeQuery(sql);
-  }
-
   public boolean runSql2(String sql) throws SQLException {
     Statement sta = conn.createStatement();
     return sta.execute(sql);
@@ -66,7 +61,7 @@ public class DB {
 
   public void saveDiff(Bug bug, int i) throws SQLException {
     String sql =
-        "INSERT INTO  `Crawler`.`Diffs` " + "(`BUG_ID`,`DIFF_ID`,`DIFF`) VALUES " + "(?,?,?);";
+        "INSERT INTO  `CRAWLER`.`Diffs` " + "(`BUG_ID`,`DIFF_ID`,`DIFF`) VALUES " + "(?,?,?);";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
     stmt.setInt(2, bug.getPatches().get(i).getId());
@@ -75,14 +70,14 @@ public class DB {
   }
 
   public void updateBugToNoDiff(Bug bug) throws SQLException {
-    String sql = "UPDATE `Crawler`.`Bugs` SET `PARSE_STATUS`='NO_DIFF' WHERE `BUG_ID`=?;";
+    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`='NO_DIFF' WHERE `BUG_ID`=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
     stmt.execute();
   }
 
   public void updateBugToDone(Bug bug) throws SQLException {
-    String sql = "UPDATE `Crawler`.`Bugs` SET `PARSE_STATUS`='DONE', `PRODUCT`=?, `DESCRIPTION`=?, "
+    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`='DONE', `PRODUCT`=?, `DESCRIPTION`=?, "
         + "`TITLE`=?, `IMPORTANCE`=?, `STATUS`=? WHERE `BUG_ID`=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, bug.getProduct());
@@ -92,6 +87,43 @@ public class DB {
     stmt.setString(5, bug.getStatus());
     stmt.setInt(6, bug.getId());
     stmt.execute();
+  }
+
+  public ResultSet checkURL(String URL) throws SQLException {
+    String sql = "SELECT * FROM RECORD WHERE URL =?";
+    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, URL);
+    return stmt.executeQuery();
+  }
+
+  public void storeURL(String URL) throws SQLException {
+    String sql = "INSERT INTO  `CRAWLER`.`RECORD` " + "(`URL`) VALUES " + "(?);";
+    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, URL);
+    stmt.execute();
+  }
+
+  public ResultSet getPendingBugs(String baseURL) throws SQLException {
+    String sql = "SELECT BUG_ID FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
+    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, baseURL);
+    return stmt.executeQuery();
+  }
+
+  public ResultSet getPendingBugsCount(String baseURL) throws SQLException {
+    String sql =
+        "SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
+    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, baseURL);
+    return stmt.executeQuery();
+  }
+
+  public ResultSet getTotalBugsCount(String baseURL) throws SQLException {
+    String sql =
+        "SELECT COUNT(*) AS TOTAL_BUGS FROM BUGS WHERE BUGZILLA_PRODUCT=?;";
+    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    stmt.setString(1, baseURL);
+    return stmt.executeQuery();
   }
 }
 
