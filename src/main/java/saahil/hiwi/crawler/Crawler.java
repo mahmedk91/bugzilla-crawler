@@ -1,6 +1,7 @@
 package saahil.hiwi.crawler;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +27,10 @@ public class Crawler {
         try {
           return jsoupConnection.get();
         } catch (SocketTimeoutException e) {
-          System.out.println("Timeout on " + URL);
+          System.out.print(" Timeout on " + URL);
+          return null;
+        } catch (ConnectException e){
+          System.out.print(" Timeout on " + URL);
           return null;
         }
       }
