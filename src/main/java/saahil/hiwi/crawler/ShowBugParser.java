@@ -25,15 +25,6 @@ public class ShowBugParser {
       return;
     }
     Elements patches = doc.getElementsByClass("bz_patch").not(".bz_tr_obsolete");
-    if (patches.size() < 1) {
-      try {
-        db.updateBugToNoDiff(bug);
-        System.out.print(" - NO DIFF\n");
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      return;
-    }
     for (Element patch : patches) {
       Elements links = patch.select("a[href]");
       for (Element link : links) {
@@ -52,7 +43,6 @@ public class ShowBugParser {
         }
       }
     }
-    DiffParser.parse(baseURL, bug, db);
     bug.setStatus(doc.getElementById("static_bug_status").text());
     bug.setProduct(doc.getElementById("field_container_product").text());
     bug.setTitle(doc.getElementById("short_desc_nonedit_display").text());
@@ -65,8 +55,18 @@ public class ShowBugParser {
       if (link.attr("href").contains("#importance"))
         bug.setImportance(link.parent().parent().parent().child(1).text());
     }
+    if (patches.size() < 1) {
+      try {
+        db.updateBug(bug, "NO_DIFF");
+        System.out.print(" - NO DIFF\n");
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      return;
+    }
+    DiffParser.parse(baseURL, bug, db);
     try {
-      db.updateBugToDone(bug);
+      db.updateBug(bug, "DONE");
       System.out.print(" - DONE\n");
     } catch (SQLException e) {
       e.printStackTrace();

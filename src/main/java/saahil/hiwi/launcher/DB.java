@@ -41,7 +41,6 @@ public class DB {
   }
 
   public void importBugs(String csvFile, String baseURL) throws SQLException {
-    System.out.println("Begin importing bugs...");
     String sql = "LOAD DATA LOCAL INFILE ? INTO TABLE BUGS " + "FIELDS TERMINATED BY ',' "
         + "ENCLOSED BY '\"' " + "LINES TERMINATED BY '\n' " + "IGNORE 1 LINES " + "(@col1) "
         + "SET BUG_ID=@col1, BUGZILLA_PRODUCT=?;";
@@ -49,7 +48,6 @@ public class DB {
     stmt.setString(1, csvFile);
     stmt.setString(2, baseURL);
     stmt.execute();
-    System.out.println("Bugs successfully imported!");
   }
 
   @Override
@@ -69,23 +67,17 @@ public class DB {
     stmt.execute();
   }
 
-  public void updateBugToNoDiff(Bug bug) throws SQLException {
-    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`='NO_DIFF' WHERE `BUG_ID`=?;";
-    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    stmt.setInt(1, bug.getId());
-    stmt.execute();
-  }
-
-  public void updateBugToDone(Bug bug) throws SQLException {
-    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`='DONE', `PRODUCT`=?, `DESCRIPTION`=?, "
+  public void updateBug(Bug bug, String parseStatus) throws SQLException {
+    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`=?, `PRODUCT`=?, `DESCRIPTION`=?, "
         + "`TITLE`=?, `IMPORTANCE`=?, `STATUS`=? WHERE `BUG_ID`=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    stmt.setString(1, bug.getProduct());
-    stmt.setString(2, bug.getDescription());
-    stmt.setString(3, bug.getTitle());
-    stmt.setString(4, bug.getImportance());
-    stmt.setString(5, bug.getStatus());
-    stmt.setInt(6, bug.getId());
+    stmt.setString(1, parseStatus);
+    stmt.setString(2, bug.getProduct());
+    stmt.setString(3, bug.getDescription());
+    stmt.setString(4, bug.getTitle());
+    stmt.setString(5, bug.getImportance());
+    stmt.setString(6, bug.getStatus());
+    stmt.setInt(7, bug.getId());
     stmt.execute();
   }
 
