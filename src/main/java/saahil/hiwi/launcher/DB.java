@@ -81,20 +81,6 @@ public class DB {
     stmt.execute();
   }
 
-  public ResultSet checkURL(String URL) throws SQLException {
-    String sql = "SELECT * FROM RECORD WHERE URL =?";
-    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    stmt.setString(1, URL);
-    return stmt.executeQuery();
-  }
-
-  public void storeURL(String URL) throws SQLException {
-    String sql = "INSERT INTO  `CRAWLER`.`RECORD` " + "(`URL`) VALUES " + "(?);";
-    PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    stmt.setString(1, URL);
-    stmt.execute();
-  }
-
   public ResultSet getPendingBugs(String baseURL) throws SQLException {
     String sql = "SELECT BUG_ID FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

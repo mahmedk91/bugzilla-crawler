@@ -19,7 +19,7 @@ public class ShowBugParser {
   public static void parse(String baseURL, Bug bug, DB db) {
     System.out.print("Processing... [" + Launcher.bugsProcessed + "/" + Launcher.totalPendingBugs
         + "] - BUG_ID: " + bug.getId());
-    Document doc = Crawler.crawl(baseURL + "/show_bug.cgi?id=" + bug.getId(), db);
+    Document doc = Crawler.crawl(baseURL + "/show_bug.cgi?id=" + bug.getId());
     if (doc == null) {
       System.out.print(" - PENDING\n");
       return;
