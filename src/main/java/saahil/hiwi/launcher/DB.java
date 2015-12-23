@@ -59,11 +59,12 @@ public class DB {
 
   public void saveDiff(Bug bug, int i) throws SQLException {
     String sql =
-        "INSERT INTO  `CRAWLER`.`DIFFS` " + "(`BUG_ID`,`DIFF_ID`,`DIFF`) VALUES " + "(?,?,?);";
+        "INSERT INTO  `CRAWLER`.`DIFFS` " + "(`BUG_ID`, `BUGZILLA_PRODUCT`, `DIFF_ID`, `DIFF`) VALUES " + "(?, ?, ?, ?);";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
-    stmt.setInt(2, bug.getPatches().get(i).getId());
-    stmt.setString(3, bug.getPatches().get(i).getDiff());
+    stmt.setString(2, bug.getBugzillaProduct());
+    stmt.setInt(3, bug.getPatches().get(i).getId());
+    stmt.setString(4, bug.getPatches().get(i).getDiff());
     stmt.execute();
   }
 
@@ -82,7 +83,7 @@ public class DB {
   }
 
   public ResultSet getPendingBugs(String baseURL) throws SQLException {
-    String sql = "SELECT BUG_ID FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
+    String sql = "SELECT BUG_ID, BUGZILLA_PRODUCT FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, baseURL);
     return stmt.executeQuery();
