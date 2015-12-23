@@ -3,9 +3,14 @@ package saahil.hiwi.crawler;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+
+import javax.net.ssl.SSLHandshakeException;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import saahil.hiwi.launcher.Config;
 
 public class Crawler {
   public static Document crawl(String URL) {
@@ -21,9 +26,13 @@ public class Crawler {
           System.out.print(" Timeout on " + URL);
           return null;
         }
-    }catch (IOException e) {
+    } catch (SSLHandshakeException e){
+      System.out.println("\nUnable to get bug info. You might have forgotten to add SSL Certificate in "+Config.SSL_TRUSTSTORE);
+      System.exit(0);
+      return null;
+    } catch (IOException e) {
       e.printStackTrace();
       return null;
-    }
+    } 
   }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Bug {
   private int id;
+  private String bugzillaProduct;
   private String title;
   private String description;
   private String importance;
@@ -12,9 +13,10 @@ public class Bug {
   private String status;
   private List<Diff> patches;
 
-  public Bug(int id) {
+  public Bug(int id, String bugzillaProduct) {
     super();
     this.id = id;
+    this.bugzillaProduct = bugzillaProduct;
     this.patches = new ArrayList<Diff>();
   }
 
@@ -24,6 +26,14 @@ public class Bug {
 
   public void setId(int id) {
     this.id = id;
+  }
+  
+  public String getBugzillaProduct() {
+    return bugzillaProduct;
+  }
+
+  public void setBugzillaProduct(String bugzillaProduct) {
+    this.bugzillaProduct = bugzillaProduct;
   }
 
   public String getTitle() {
@@ -64,12 +74,6 @@ public class Bug {
 
   public void setStatus(String status) {
     this.status = status;
-  }
-
-  @Override
-  public String toString() {
-    return "Bug [id=" + id + ", title=" + title + ", description=" + description + ", importance="
-        + importance + ", product=" + product + ", status=" + status + ", patches=" + patches + "]";
   }
 
   public List<Diff> getPatches() {

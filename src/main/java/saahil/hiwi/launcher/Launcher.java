@@ -53,8 +53,8 @@ public class Launcher {
     pendingBugsCount.close();
     totalBugsCount.close();
     while (bugs.next()) {
-      Bug bug = new Bug(bugs.getInt("BUG_ID"));
-      ShowBugParser.parse(baseURL, bug, db);
+      Bug bug = new Bug(bugs.getInt("BUG_ID"), bugs.getString("BUGZILLA_PRODUCT"));
+      ShowBugParser.parse(bug, db);
       bugsProcessed--;
     }
     bugs.close();

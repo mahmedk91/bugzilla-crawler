@@ -16,12 +16,12 @@ import saahil.hiwi.launcher.DB;
 
 public class DiffParser {
 
-  public static void parse(String baseURL, Bug bug, DB db) {
+  public static void parse(Bug bug, DB db) {
     for (int i = 0; i < bug.getPatches().size(); i++) {
       try {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request =
-            new HttpGet(baseURL + "/attachment.cgi?id=" + bug.getPatches().get(i).getId()
+            new HttpGet(bug.getBugzillaProduct() + "/attachment.cgi?id=" + bug.getPatches().get(i).getId()
                 + "&action=diff&context=patch&collapsed=&headers=1&format=raw");
         HttpResponse response;
         response = client.execute(request);

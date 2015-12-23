@@ -16,10 +16,10 @@ import saahil.hiwi.launcher.Launcher;
 
 public class ShowBugParser {
 
-  public static void parse(String baseURL, Bug bug, DB db) {
+  public static void parse(Bug bug, DB db) {
     System.out.print("Processing... [" + Launcher.bugsProcessed + "/" + Launcher.totalPendingBugs
         + "] - BUG_ID: " + bug.getId());
-    Document doc = Crawler.crawl(baseURL + "/show_bug.cgi?id=" + bug.getId());
+    Document doc = Crawler.crawl(bug.getBugzillaProduct() + "/show_bug.cgi?id=" + bug.getId());
     if (doc == null) {
       System.out.print(" - PENDING\n");
       return;
@@ -30,7 +30,7 @@ public class ShowBugParser {
       for (Element link : links) {
         if (link.attr("href").contains("action=diff")) {
           try {
-            URL diffUrl = new URL(baseURL + "/" + link.attr("href"));
+            URL diffUrl = new URL(bug.getBugzillaProduct() + "/" + link.attr("href"));
             String[] diffUrlParams = diffUrl.getQuery().split("&");
             String[] diffId = diffUrlParams[0].split("=");
             Diff diff = new Diff(Integer.parseInt(diffId[1]));
@@ -64,7 +64,7 @@ public class ShowBugParser {
       }
       return;
     }
-    DiffParser.parse(baseURL, bug, db);
+    DiffParser.parse(bug, db);
     try {
       db.updateBug(bug, "DONE");
       System.out.print(" - DONE\n");
