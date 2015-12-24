@@ -14,10 +14,10 @@ public class Config {
       "C:/Program Files/Java/jdk1.8.0_51/jre/lib/security/cacerts";
 
   /**
-   * Type of Database Server.<br>
-   * Set DB_SERVER to either <b>mysql</b> or <b>postgresql</b> to specify type of db server.
+   * Type of Database.<br>
+   * Set DB_SERVER to either <b>mysql</b>, <b>postgresql</b> or <b>sqlite</b> to specify type of db.
    */
-  public static final String DB_SERVER = "mysql";
+  public static final String DB_TYPE = "sqlite";
 
   /**
    * Name of Database host.

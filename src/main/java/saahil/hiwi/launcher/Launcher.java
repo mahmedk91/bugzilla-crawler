@@ -20,7 +20,7 @@ public class Launcher {
     String baseURL = null;
     if (args.length == 1) {
       baseURL = args[0];
-    } else if (args.length == 2) {
+    } else if (args.length == 2 && !Config.DB_TYPE.equals("sqlite")) {
       dataFolder = args[1];
       baseURL = args[0];
       System.out.println("Begin importing bugs...");
@@ -40,7 +40,11 @@ public class Launcher {
       }
       System.out.println("Bugs successfully imported!");
     } else {
-      System.out.println("Wrong number of arguments.");
+      System.out.println(
+          "Wrong number of arguments."
+          + "\nProgram needs atleast baseURL to run."
+          + "\nCorrect usage is java saahil.hiwi.crawler.Launcher \"baseURL\" \"csvFolder\""
+          + "\nFor sqlite there can be only baseURL");
       System.exit(0);
     }
     ResultSet bugs = db.getPendingBugs(baseURL);

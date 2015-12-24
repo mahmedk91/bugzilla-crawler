@@ -15,17 +15,25 @@ public class DB {
 
   public DB() {
     try {
-      if (Config.DB_SERVER.equals("mysql")) {
-        Class.forName("com.mysql.jdbc.Driver");
-      } else if (Config.DB_SERVER.equals("postgresql")) {
-        Class.forName("org.postgresql.Driver");
-      } else {
-        throw new BadConfigException(Config.DB_SERVER
-            + " db server is not supported by the application. Please read documentation of DB_SERVER");
-      }
-      String url = "jdbc:" + Config.DB_SERVER + "://" + Config.DB_HOST + ":" + Config.DB_PORT + "/"
+      String url = "jdbc:" + Config.DB_TYPE + "://" + Config.DB_HOST + ":" + Config.DB_PORT + "/"
           + Config.DB_NAME;
-      conn = DriverManager.getConnection(url, Config.DB_USER, Config.DB_PASSWORD);
+      switch(Config.DB_TYPE){
+        case "sqlite":
+          Class.forName("org.sqlite.JDBC");
+          conn = DriverManager.getConnection("jdbc:sqlite:Database/crawler.db");
+          break;
+        case "postgresql":
+          Class.forName("org.postgresql.Driver");
+          conn = DriverManager.getConnection(url, Config.DB_USER, Config.DB_PASSWORD);
+          break;
+        case "mysql":
+          Class.forName("com.mysql.jdbc.Driver");
+          conn = DriverManager.getConnection(url, Config.DB_USER, Config.DB_PASSWORD);
+          break;
+        default:
+          throw new BadConfigException(Config.DB_TYPE
+              + " db server is not supported by the application. Please read documentation of DB_SERVER");
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
@@ -59,7 +67,7 @@ public class DB {
 
   public void saveDiff(Bug bug, int i) throws SQLException {
     String sql =
-        "INSERT INTO  `CRAWLER`.`DIFFS` " + "(`BUG_ID`, `BUGZILLA_PRODUCT`, `DIFF_ID`, `DIFF`) VALUES " + "(?, ?, ?, ?);";
+        "INSERT INTO `DIFFS` " + "(`BUG_ID`, `BUGZILLA_PRODUCT`, `DIFF_ID`, `DIFF`) VALUES " + "(?, ?, ?, ?);";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
     stmt.setString(2, bug.getBugzillaProduct());
@@ -69,7 +77,7 @@ public class DB {
   }
 
   public void updateBug(Bug bug, String parseStatus) throws SQLException {
-    String sql = "UPDATE `CRAWLER`.`BUGS` SET `PARSE_STATUS`=?, `PRODUCT`=?, `DESCRIPTION`=?, "
+    String sql = "UPDATE `BUGS` SET `PARSE_STATUS`=?, `PRODUCT`=?, `DESCRIPTION`=?, "
         + "`TITLE`=?, `IMPORTANCE`=?, `STATUS`=? WHERE `BUG_ID`=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, parseStatus);
