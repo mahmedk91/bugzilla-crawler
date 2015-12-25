@@ -43,18 +43,17 @@ public class DB {
     }
   }
 
-  public boolean runSql2(String sql) throws SQLException {
+  public ResultSet runSql(String sql) throws SQLException {
     Statement sta = conn.createStatement();
-    return sta.execute(sql);
+    return sta.executeQuery(sql);
   }
 
-  public void importBugs(String csvFile, String baseURL) throws SQLException {
+  public void importBugs(String csvFile) throws SQLException {
     String sql = "LOAD DATA LOCAL INFILE ? INTO TABLE BUGS " + "FIELDS TERMINATED BY ',' "
-        + "ENCLOSED BY '\"' " + "LINES TERMINATED BY '\n' " + "IGNORE 1 LINES " + "(@col1) "
-        + "SET BUG_ID=@col1, BUGZILLA_PRODUCT=?;";
+        + "ENCLOSED BY '\"' " + "LINES TERMINATED BY '\n' (@col1, @col2) "
+        + "SET BUG_ID=@col1, BUGZILLA_PRODUCT=@col2;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, csvFile);
-    stmt.setString(2, baseURL);
     stmt.execute();
   }
 
@@ -111,6 +110,18 @@ public class DB {
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, baseURL);
     return stmt.executeQuery();
+  }
+
+  public ResultSet getPendingBugs() throws SQLException {
+    return runSql("SELECT BUG_ID, BUGZILLA_PRODUCT FROM BUGS WHERE PARSE_STATUS='PENDING';");
+  }
+
+  public ResultSet getTotalBugsCount() throws SQLException {
+    return runSql("SELECT COUNT(*) AS TOTAL_BUGS FROM BUGS;");
+  }
+
+  public ResultSet getPendingBugsCount() throws SQLException {
+   return runSql("SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS='PENDING';");
   }
 }
 

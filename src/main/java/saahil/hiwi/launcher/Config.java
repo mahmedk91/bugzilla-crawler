@@ -17,7 +17,7 @@ public class Config {
    * Type of Database.<br>
    * Set DB_SERVER to either <b>mysql</b>, <b>postgresql</b> or <b>sqlite</b> to specify type of db.
    */
-  public static final String DB_TYPE = "sqlite";
+  public static final String DB_TYPE = "mysql";
 
   /**
    * Name of Database host.

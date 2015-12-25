@@ -18,7 +18,7 @@ public class ShowBugParser {
 
   public static void parse(Bug bug, DB db) {
     System.out.print("Processing... [" + Launcher.bugsProcessed + "/" + Launcher.totalPendingBugs
-        + "] - BUG_ID: " + bug.getId());
+        + "] - BUG_ID: " + bug.getId() + " - " + bug.getBugzillaProduct());
     Document doc = Crawler.crawl(bug.getBugzillaProduct() + "/show_bug.cgi?id=" + bug.getId());
     if (doc == null) {
       System.out.print(" - PENDING\n");
