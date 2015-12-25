@@ -17,7 +17,7 @@ public class DB {
     try {
       String url = "jdbc:" + Config.DB_TYPE + "://" + Config.DB_HOST + ":" + Config.DB_PORT + "/"
           + Config.DB_NAME;
-      switch(Config.DB_TYPE){
+      switch (Config.DB_TYPE) {
         case "sqlite":
           Class.forName("org.sqlite.JDBC");
           conn = DriverManager.getConnection("jdbc:sqlite:Database/crawler.db");
@@ -48,6 +48,11 @@ public class DB {
     return sta.executeQuery(sql);
   }
 
+  public void runSql2(String sql) throws SQLException {
+    Statement sta = conn.createStatement();
+    sta.execute(sql);
+  }
+
   public void importBugs(String csvFile) throws SQLException {
     String sql = "LOAD DATA LOCAL INFILE ? INTO TABLE BUGS " + "FIELDS TERMINATED BY ',' "
         + "ENCLOSED BY '\"' " + "LINES TERMINATED BY '\n' (@col1, @col2) "
@@ -65,8 +70,8 @@ public class DB {
   }
 
   public void saveDiff(Bug bug, int i) throws SQLException {
-    String sql =
-        "INSERT INTO `DIFFS` " + "(`BUG_ID`, `BUGZILLA_PRODUCT`, `DIFF_ID`, `DIFF`) VALUES " + "(?, ?, ?, ?);";
+    String sql = "INSERT INTO `DIFFS` "
+        + "(`BUG_ID`, `BUGZILLA_PRODUCT`, `DIFF_ID`, `DIFF`) VALUES " + "(?, ?, ?, ?);";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setInt(1, bug.getId());
     stmt.setString(2, bug.getBugzillaProduct());
@@ -90,7 +95,8 @@ public class DB {
   }
 
   public ResultSet getPendingBugs(String baseURL) throws SQLException {
-    String sql = "SELECT BUG_ID, BUGZILLA_PRODUCT FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
+    String sql =
+        "SELECT BUG_ID, BUGZILLA_PRODUCT FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, baseURL);
     return stmt.executeQuery();
@@ -98,15 +104,14 @@ public class DB {
 
   public ResultSet getPendingBugsCount(String baseURL) throws SQLException {
     String sql =
-        "SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS='PENDING' AND BUGZILLA_PRODUCT=?;";
+        "SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS!='PENDING' AND BUGZILLA_PRODUCT=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, baseURL);
     return stmt.executeQuery();
   }
 
   public ResultSet getTotalBugsCount(String baseURL) throws SQLException {
-    String sql =
-        "SELECT COUNT(*) AS TOTAL_BUGS FROM BUGS WHERE BUGZILLA_PRODUCT=?;";
+    String sql = "SELECT COUNT(*) AS TOTAL_BUGS FROM BUGS WHERE BUGZILLA_PRODUCT=?;";
     PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, baseURL);
     return stmt.executeQuery();
@@ -121,7 +126,21 @@ public class DB {
   }
 
   public ResultSet getPendingBugsCount() throws SQLException {
-   return runSql("SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS='PENDING';");
+    return runSql("SELECT COUNT(*) AS PENDING_BUGS FROM BUGS WHERE PARSE_STATUS!='PENDING';");
+  }
+
+  public void dropConstraints() throws SQLException {
+    runSql2("ALTER TABLE DIFFS DROP FOREIGN KEY DIFFS_IBFK_1;");
+    runSql2("ALTER TABLE BUGS MODIFY BUG_ID INT NOT NULL;");
+    runSql2("ALTER TABLE BUGS MODIFY BUGZILLA_PRODUCT VARCHAR(50) NOT NULL;");
+    runSql2("ALTER TABLE BUGS DROP PRIMARY KEY;");
+  }
+
+  public void reCreateConstraints() throws SQLException {
+    runSql2("ALTER TABLE BUGS ADD PRIMARY KEY(BUG_ID, BUGZILLA_PRODUCT);");
+    runSql2("ALTER TABLE DIFFS ADD FOREIGN KEY (`BUG_ID`,`BUGZILLA_PRODUCT`) "
+        + "REFERENCES `BUGS`(`BUG_ID`,`BUGZILLA_PRODUCT`) "
+        + "ON DELETE CASCADE ON UPDATE CASCADE;");
   }
 }
 
