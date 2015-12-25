@@ -13,6 +13,7 @@ import saahil.hiwi.entities.Bug;
 import saahil.hiwi.entities.Diff;
 import saahil.hiwi.launcher.DB;
 import saahil.hiwi.launcher.Launcher;
+import saahil.hiwi.launcher.Projects;
 
 public class ShowBugParser {
 
@@ -26,21 +27,52 @@ public class ShowBugParser {
     }
     Elements patches = doc.getElementsByClass("bz_patch").not(".bz_tr_obsolete");
     for (Element patch : patches) {
-      Elements links = patch.select("a[href]");
-      for (Element link : links) {
-        if (link.attr("href").contains("action=diff")) {
-          try {
-            URL diffUrl = new URL(bug.getBugzillaProduct() + "/" + link.attr("href"));
-            String[] diffUrlParams = diffUrl.getQuery().split("&");
-            String[] diffId = diffUrlParams[0].split("=");
-            Diff diff = new Diff(Integer.parseInt(diffId[1]));
-            List<Diff> diffs = bug.getPatches();
-            diffs.add(diff);
-            bug.setPatches(diffs);
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
+      switch (bug.getBugzillaProduct()) {
+        case Projects.NOVELL:
+        case Projects.LIBRE_OFFICE:
+        case Projects.MOZILLA:
+        case Projects.KDE:
+          Elements spans = patch.getElementsByClass("bz_attach_extra_info");
+          for (Element span : spans) {
+            if (span.text().contains("patch")) {
+              try {
+                URL diffUrl = new URL(bug.getBugzillaProduct() + "/" + span.parent().child(0).attr("href"));
+                String diffUrlParams = diffUrl.getQuery();
+                String[] diffId = diffUrlParams.split("=");
+                Diff diff = new Diff(Integer.parseInt(diffId[1]), diffUrl.toString());
+                List<Diff> diffs = bug.getPatches();
+                diffs.add(diff);
+                bug.setPatches(diffs);
+              } catch (MalformedURLException e) {
+                e.printStackTrace();
+              }
+            }
           }
-        }
+          break;
+        case Projects.GNOME:
+        case Projects.APACHE:
+        case Projects.LINUX_KERNAL:
+        case Projects.GENTOO:
+        case Projects.OPEN_OFFICE:
+        default:
+          Elements links = patch.select("a[href]");
+          for (Element link : links) {
+            if (link.attr("href").contains("action=diff")) {
+              try {
+                URL diffUrl = new URL(bug.getBugzillaProduct() + "/" + link.attr("href"));
+                String[] diffUrlParams = diffUrl.getQuery().split("&");
+                String[] diffId = diffUrlParams[0].split("=");
+                String diffUri = bug.getBugzillaProduct() + "/attachment.cgi?id=" + diffId[1]
+                    + "&action=diff&context=patch&collapsed=&headers=1&format=raw";
+                Diff diff = new Diff(Integer.parseInt(diffId[1]), diffUri);
+                List<Diff> diffs = bug.getPatches();
+                diffs.add(diff);
+                bug.setPatches(diffs);
+              } catch (MalformedURLException e) {
+                e.printStackTrace();
+              }
+            }
+          }
       }
     }
     bug.setStatus(doc.getElementById("static_bug_status").text());
@@ -52,8 +84,10 @@ public class ShowBugParser {
     }
     Elements links = doc.select("a[href]");
     for (Element link : links) {
-      if (link.attr("href").contains("#importance"))
+      if (link.attr("href").contains("#importance") || link.attr("href").contains("#priority")){
         bug.setImportance(link.parent().parent().parent().child(1).text());
+        break;
+      }
     }
     if (patches.size() < 1) {
       try {

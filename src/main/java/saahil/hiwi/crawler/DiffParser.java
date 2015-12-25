@@ -21,8 +21,7 @@ public class DiffParser {
       try {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request =
-            new HttpGet(bug.getBugzillaProduct() + "/attachment.cgi?id=" + bug.getPatches().get(i).getId()
-                + "&action=diff&context=patch&collapsed=&headers=1&format=raw");
+            new HttpGet(bug.getPatches().get(i).getUri());
         HttpResponse response;
         response = client.execute(request);
         BufferedReader rd =
