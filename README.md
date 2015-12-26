@@ -18,12 +18,11 @@ You can also download certificate via [OpenSSL](http://superuser.com/questions/9
 ##### Importing .cer file to Java Truststore
 Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/**  
 The password of the cacert truststore is **changeit** by default. Use the following command to import the certificate followed by verifying the password and conforming the import of the certificate with a **yes** -  
-```
+``` bash
 keytool -import -alias "example" -file "<path to certificate>/example.cer" -keystore "<path to java>/Java/jdk<version>/jre/lib/security/cacerts"
 ```
 
-***Note*** -  
-**&lt;path to java&gt;\Java\jdk&lt;version&gt;\bin** must be added to your PATH environment variable before using keytool.
+*Note - "&lt;path to java&gt;\Java\jdk&lt;version&gt;\bin\" must be added to your PATH environment variable before using keytool.*
 
 ## Preparing csv Buglist
 The result of a search page in any bugzilla website is limited to 10000 records. That means, you cannot see more than 10000 issues at a time. However, a bugzilla site could have more than 10000 documented bugs.  
@@ -36,12 +35,12 @@ If you want to combine several csv files into one then -
 - Go to that folder
 - Make a newFolder.
 - Command for Windows -
-  ```
+  ``` bash
   type *.csv > newFolder/mergedBugList.csv
   ```
   
   Command for Linux - 
-  ```
+  ``` bash
   cat *.csv > newFolder/mergedBugList.csv
   ```
   
@@ -58,7 +57,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ...
   ```
 
-  ***Note* - This format is compatible with all 3 kinds of database.**
+  *Note - This csv format is compatible with all 3 kinds of database.*
 - If you use **MySql** or **PostgreSql**, your csv files should atleast have data till **second column**. For example - 
   ```
   41142,https://bz.apache.org/bugzilla
@@ -66,66 +65,67 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ...
   ```
 
-  ***Note* - This csv format is not compatible with sqlite database.**  
+  *Note - This csv format is not compatible with sqlite database.*  
 ## Creating database
 ##### MySQL
 - Download MySql from [here](http://dev.mysql.com/downloads/mysql/)
 - Create a username and password
 - Use the following command to create schema - 
-  ```
+  ``` bash
   mysql --host=<hostname> --user=<username> --password=<password> < "<path to cloned github directory>/Database/MySQL Database Schema.sql"
   ```
   
-  ***Note* - If you are creating database on local machine, then hostname is "locahost".**  
+  *Note - If you are creating database on local machine, then hostname is "locahost".*  
 ##### SqLite
 - Download sqlite shell from [here](https://www.sqlite.org/download.html)
 - Run sqlite3 shell
 - Make a new database
-  ```
+  ``` bash
   .open "<path to database>/<database name>.db"
   ```  
   
 - Use the following command to create schema - 
-  ```
+  ``` bash
   .read "<path to cloned github directory>/Database/SQLite Database Schema.sql"
   ```  
   
 - Exit the shell
-  ```
+  ``` bash
   .exit
   ```  
   
 ## Importing buglist in database
-***Note* - If you use MySql or PostgreSql, you can skip this section.**  
+*Note - If you use MySql or PostgreSql, you can skip this section.*  
 SqLite doesn't have statements to import data from csv. However, its shell provide "limited" features to import data directly from csv (only if you have data in correct format, Thanks to the steps above ;P).   
 - Run sqlite3 shell
 - Open your database
-  ```
+  ``` bash
   .open "<path to database>/<database name>.db"
   ``` 
   
 - Change mode to csv
-  ```
+  ``` bash
   .mode csv
   ```  
   
 - Import all csv files one by one using
-  ```
+  ``` bash
   .import "<path to csvFolder>/file.csv"
   ```  
   
-  ***Note* - Take advantage of above steps to combine all csv files in one. That way, you can import all data in a single go.**
+  *Note - Take advantage of above steps to combine all csv files in one. That way, you can import all data in a single go.*
 - Exit the shell
-  ```
+
+  ``` bash
   .exit
-  ```  
+  ```
   
 ## Configuring bugzilla-crawler
 This is the final step where you tell bugzilla-crawler type of database, hostname, user, location of truststore, etc. Following are the params which need to be specified in **Config.java** -
 - ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/cacerts**
 - ***DB_TYPE*** - Type of database you are using with bugzilla-crawler. It can be set to either **mysql**, **postgresql** or **sqlite**.
 - ***DB_LOC*** - Location of sqlite database file.  
-***Note* - This is only important if you use sqlite database else ignore it. You can ignore rest of the following settings as they don't concern SQLite.**
+*Note - This is only important if you use sqlite database else ignore it. You can ignore rest of the following settings as they don't concern SQLite.*
 - ***DB_HOST*** - Host of your database. Use **localhost** if your database exist on the local machine or **hostname of your database server** if your database exists on external database server.
 - ***DB_PORT*** - Port number on which your database server is running. By default port of MySql is **3306** and PostgreSql is **5432** (Unless Ofcourse, if you have changed it).
 - ***DB_NAME*** - Name of the database. In our schema creation sql we have used **CRAWLER**. Specify different name if you have changed the database name.
@@ -134,7 +134,7 @@ This is the final step where you tell bugzilla-crawler type of database, hostnam
 
 ## Download dependencies and build using maven
 The following maven command would download all the dependencies first and then build bugzilla-crawler with the config data you specified in previous step.
-```
+``` bash
 mvn clean install
 ```
 
@@ -143,8 +143,8 @@ You can specify 2 **optional** flags to start the crawler in different modes -
 - ***-f &lt;path to csv folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
 - ***-url &lt;bugzilla website url&gt;***&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
 
-***Note* - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.**  
+*Note - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.*  
 Use the following maven command to start the crawler - 
-```
+``` bash
 mvn exec:java -Dexec.mainClass=saahil.hiwi.launcher.Launcher -Dexec.args="-f 'path to csvFolder' -url 'bugzilla website url'"
 ```
