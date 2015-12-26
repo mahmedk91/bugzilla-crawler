@@ -140,7 +140,7 @@ mvn clean install
 
 ## Start crawling
 You can specify 2 **optional** flags to start the crawler in different modes -  
-- ***-f &lt;path_to_csv_folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
+- ***-f &lt;path_to_csv_folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
 - ***-url &lt;bugzilla_website_url&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
 
 *Note - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.*  
