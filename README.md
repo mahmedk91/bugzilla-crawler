@@ -76,7 +76,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_directory>/Database/MySQL Database Schema.sql"
   ```
   
-  *Note - If you are creating database on local machine, then hostname is "locahost".*  
+  *Note - If you are creating database on local machine, then hostname is "localhost".*  
   
 ##### SqLite
 - Download sqlite shell from [here](https://www.sqlite.org/download.html)
