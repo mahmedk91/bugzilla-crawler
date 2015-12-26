@@ -16,13 +16,13 @@ Downloading the SSL certificate of a bugzilla website is fairly easy. Just open 
 You can also download certificate via [OpenSSL](http://superuser.com/questions/97201/how-to-save-a-remote-server-ssl-certificate-locally-as-a-file)
 
 ##### Importing .cer file to Java Truststore
-Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/**  
+Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **&lt;path_to_java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/**  
 The password of the cacert truststore is **changeit** by default. Use the following command to import the certificate followed by verifying the password and conforming the import of the certificate with a **yes** -  
 ``` bash
-keytool -import -alias "example" -file "<path to certificate>/example.cer" -keystore "<path to java>/Java/jdk<version>/jre/lib/security/cacerts"
+keytool -import -alias "example" -file "<path_to_certificate>/example.cer" -keystore "<path_to_java>/Java/jdk<version>/jre/lib/security/cacerts"
 ```
 
-*Note - "&lt;path to java&gt;\Java\jdk&lt;version&gt;\bin\" must be added to your PATH environment variable before using keytool.*
+*Note - "&lt;path_to_java&gt;\Java\jdk&lt;version&gt;\bin\" must be added to your PATH environment variable before using keytool.*
 
 ## Preparing csv Buglist
 The result of a search page in any bugzilla website is limited to 10000 records. That means, you cannot see more than 10000 issues at a time. However, a bugzilla site could have more than 10000 documented bugs.  
@@ -72,7 +72,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
 - Create a username and password
 - Use the following command to create schema - 
   ``` bash
-  mysql --host=<hostname> --user=<username> --password=<password> < "<path to cloned github directory>/Database/MySQL Database Schema.sql"
+  mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_directory>/Database/MySQL Database Schema.sql"
   ```
   
   *Note - If you are creating database on local machine, then hostname is "locahost".*  
@@ -81,12 +81,12 @@ The csv files need a little bit of reformatting in order to be compatible with a
 - Run sqlite3 shell
 - Make a new database
   ``` bash
-  .open "<path to database>/<database name>.db"
+  .open "<path_to_database>/<database_name>.db"
   ```  
   
 - Use the following command to create schema - 
   ``` bash
-  .read "<path to cloned github directory>/Database/SQLite Database Schema.sql"
+  .read "<path_to_cloned_github_directory>/Database/SQLite Database Schema.sql"
   ```  
   
 - Exit the shell
@@ -100,7 +100,7 @@ SqLite doesn't have statements to import data from csv. However, its shell provi
 - Run sqlite3 shell
 - Open your database
   ``` bash
-  .open "<path to database>/<database name>.db"
+  .open "<path_to_database>/<database_name>.db"
   ``` 
   
 - Change mode to csv
@@ -110,7 +110,7 @@ SqLite doesn't have statements to import data from csv. However, its shell provi
   
 - Import all csv files one by one using
   ``` bash
-  .import "<path to csvFolder>/file.csv"
+  .import "<path_to_csvFolder>/file.csv"
   ```  
   
   *Note - Take advantage of above steps to combine all csv files in one. That way, you can import all data in a single go.*
@@ -122,7 +122,7 @@ SqLite doesn't have statements to import data from csv. However, its shell provi
   
 ## Configuring bugzilla-crawler
 This is the final step where you tell bugzilla-crawler type of database, hostname, user, location of truststore, etc. Following are the params which need to be specified in **Config.java** -
-- ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/cacerts**
+- ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **&lt;path_to_java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/cacerts**
 - ***DB_TYPE*** - Type of database you are using with bugzilla-crawler. It can be set to either **mysql**, **postgresql** or **sqlite**.
 - ***DB_LOC*** - Location of sqlite database file.  
 *Note - This is only important if you use sqlite database else ignore it. You can ignore rest of the following settings as they don't concern SQLite.*
@@ -140,11 +140,12 @@ mvn clean install
 
 ## Start crawling
 You can specify 2 **optional** flags to start the crawler in different modes -  
-- ***-f &lt;path to csv folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
-- ***-url &lt;bugzilla website url&gt;***&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
+- ***-f &lt;path_to_csv_folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
+- ***-url &lt;bugzilla_website_url&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
 
 *Note - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.*  
+
 Use the following maven command to start the crawler - 
 ``` bash
-mvn exec:java -Dexec.mainClass=saahil.hiwi.launcher.Launcher -Dexec.args="-f 'path to csvFolder' -url 'bugzilla website url'"
+mvn exec:java -Dexec.mainClass=saahil.hiwi.launcher.Launcher -Dexec.args="-f 'path_to_csvFolder' -url 'bugzilla_website_url'"
 ```
