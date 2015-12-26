@@ -11,7 +11,7 @@ public class Config {
    * Keytool program is located in jdk&lt;version&gt;\bin
    */
   public static final String SSL_TRUSTSTORE =
-      "C:/Program Files/Java/jdk1.8.0_51/jre/lib/security/cacerts";
+      "";
 
   /**
    * Type of Database.<br>
@@ -22,7 +22,7 @@ public class Config {
   /**
    * <b>Only for sqlite</b>.<br> Location of sqlite database file
    */
-  public static final String DB_LOC = "D:/bugzilla-crawler/Database/crawler.db";
+  public static final String DB_LOC = "";
   
   /**
    * Name of Database host.
@@ -42,11 +42,11 @@ public class Config {
   /**
    * Name of database user
    */
-  public static final String DB_USER = "root";
+  public static final String DB_USER = "";
 
   /**
    * Database password of specified user
    */
-  public static final String DB_PASSWORD = "root";
+  public static final String DB_PASSWORD = "";
 
 }
