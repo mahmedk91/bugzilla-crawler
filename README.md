@@ -66,6 +66,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ```
 
   *Note - This csv format is not compatible with sqlite database.*  
+  
 ## Creating database
 ##### MySQL
 - Download MySql from [here](http://dev.mysql.com/downloads/mysql/)
