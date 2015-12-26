@@ -73,7 +73,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
 - Create a username and password
 - Use the following command to create schema - 
   ``` bash
-  mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_directory>/Database/MySQL Database Schema.sql"
+  mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_repository>/Database/MySQL Database Schema.sql"
   ```
   
   *Note - If you are creating database on local machine, then hostname is "localhost".*  
@@ -88,7 +88,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   
 - Use the following command to create schema - 
   ``` bash
-  .read "<path_to_cloned_github_directory>/Database/SQLite Database Schema.sql"
+  .read "<path_to_cloned_github_repository>/Database/SQLite Database Schema.sql"
   ```  
   
 - Exit the shell
