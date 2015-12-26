@@ -14,13 +14,13 @@ Most of the bugzilla websites use HTTPS to transfer their content. Java uses a S
 Downloading the SSL certificate of a bugzilla website is fairly easy. Just open the website and click on the **Green lock icon** in the address bar of the browser. Go to details of the certificate and export the certificate to a .cer file.  
 You can also download certificate via [OpenSSL](http://superuser.com/questions/97201/how-to-save-a-remote-server-ssl-certificate-locally-as-a-file)
 ##### Importing .cer file to Java Truststore
-Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **<path to java>/Java/jdk<version>/jre/lib/security/**  
+Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/**  
 The password of the cacert truststore is **changeit** by default. Use the following command to import the certificate followed by verifying the password and conforming the import of the certificate with a **yes** -  
 ```
 keytool -import -alias "example" -file "<path to certificate>/example.cer" -keystore "<path to java>/Java/jdk<version>/jre/lib/security/cacerts"
 ```
 ***Note*** -  
-**<path to java>\Java\jdk<version>\bin** must be added to your PATH environment variable before using keytool.
+**&lt;path to java&gt;\Java\jdk&lt;version&gt;\bin** must be added to your PATH environment variable before using keytool.
 
 ## Preparing csv Buglist
 The result of a search page in any bugzilla website is limited to 10000 records. That means, you cannot see more than 10000 issues at a time. However, a bugzilla site could have more than 10000 documented bugs.  
@@ -33,13 +33,13 @@ If you want to combine several csv files into one then -
 2. Go to that folder
 3. Make a newFolder.
 3. Command for Windows -
-   ```
-   type *.csv > newFolder/mergedBugList.csv
-   ```
-   Command for Linux - 
-   ```
-   cat *.csv > newFolder/mergedBugList.csv
-   ```
+  ```
+  type *.csv > newFolder/mergedBugList.csv
+  ```
+  Command for Linux - 
+  ```
+  cat *.csv > newFolder/mergedBugList.csv
+  ```
 ##### Manually re-formatting csv Buglist
 The csv files need a little bit of reformatting in order to be compatible with all 3 kind of databases supported by bugzilla-crawler.
 - There must be no header in csv file, i.e, No first line as column label.
@@ -107,7 +107,7 @@ SqLite doesn't have statements to import data from csv. However, its shell provi
   ```
 ## Configuring bugzilla-crawler
 This is the final step where you tell bugzilla-crawler type of database, hostname, user, location of truststore, etc. Following are the params which need to be specified in **Config.java** -
-- ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **<path to java>/Java/jdk<version>/jre/lib/security/cacerts**
+- ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/cacerts**
 - ***DB_TYPE*** - Type of database you are using with bugzilla-crawler. It can be set to either **mysql**, **postgresql** or **sqlite**.
 - ***DB_LOC*** - Location of sqlite database file.  
 ***Note* - This is only important if you use sqlite database else ignore it. You can ignore rest of the following settings as they don't concern SQLite.**
@@ -123,8 +123,8 @@ mvn clean install
 ```
 ## Start crawling
 You can specify 2 **optional** flags to start the crawler in different modes -  
-- ***-f <path to csv folder>***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
-- ***-url <bugzilla website url>***&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
+- ***-f &lt;path to csv folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
+- ***-url &lt;bugzilla website url&gt;***&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
 
 ***Note* - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.**  
 Use the following maven command to start the crawler - 
