@@ -20,6 +20,11 @@ public class Config {
   public static final String DB_TYPE = "mysql";
 
   /**
+   * <b>Only for sqlite</b>.<br> Location of sqlite database file
+   */
+  public static final String DB_LOC = "D:/bugzilla-crawler/Database/crawler.db";
+  
+  /**
    * Name of Database host.
    */
   public static final String DB_HOST = "localhost";

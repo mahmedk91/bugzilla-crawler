@@ -20,7 +20,7 @@ public class DB {
       switch (Config.DB_TYPE) {
         case "sqlite":
           Class.forName("org.sqlite.JDBC");
-          conn = DriverManager.getConnection("jdbc:sqlite:Database/crawler.db");
+          conn = DriverManager.getConnection("jdbc:sqlite:"+Config.DB_LOC);
           break;
         case "postgresql":
           Class.forName("org.postgresql.Driver");
