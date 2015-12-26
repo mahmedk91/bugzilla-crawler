@@ -6,19 +6,22 @@
 - Run the program with -url flag to crawl bugzilla of specific project.
 - Stop and resume the crawler anytime.
 - Easily configure and switch between MySql, PostgreSql or Sqlite database. 
-- Currently supports bugzilla of apache, gentoo, gnome, kde, libre-office, linux-kernel, mozilla, novell and open-office. A list of bugzilla websites can be found [here](https://www.bugzilla.org/installation-list/), but not all of them are supported.
+- Currently supports bugzilla of apache, gentoo, gnome, kde, libre-office, linux-kernel, mozilla, novell and open-office. A list of bugzilla websites can be found [here](https://www.bugzilla.org/installation-list/), but not all of them are supported.  
  
 ## Importing SSL certificates
 Most of the bugzilla websites use HTTPS to transfer their content. Java uses a SSL Truststore to look for the SSL certificate of the target bugzilla website. In order to crawl such a site, you first need to add the SSL certificate to the truststore. 
+
 ##### Downloading SSL of a bugzilla website
 Downloading the SSL certificate of a bugzilla website is fairly easy. Just open the website and click on the **Green lock icon** in the address bar of the browser. Go to details of the certificate and export the certificate to a .cer file.  
 You can also download certificate via [OpenSSL](http://superuser.com/questions/97201/how-to-save-a-remote-server-ssl-certificate-locally-as-a-file)
+
 ##### Importing .cer file to Java Truststore
 Use keytool to add a certificate to the Java Truststore. By default Java uses **cacert** file located in **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/**  
 The password of the cacert truststore is **changeit** by default. Use the following command to import the certificate followed by verifying the password and conforming the import of the certificate with a **yes** -  
 ```
 keytool -import -alias "example" -file "<path to certificate>/example.cer" -keystore "<path to java>/Java/jdk<version>/jre/lib/security/cacerts"
 ```
+
 ***Note*** -  
 **&lt;path to java&gt;\Java\jdk&lt;version&gt;\bin** must be added to your PATH environment variable before using keytool.
 
@@ -29,17 +32,19 @@ To get all bugs you could refine your search for fewer products (instead of all 
 Each time you search, go to the end of result page and download the list as a csv file.
 ##### Combining csv Buglist
 If you want to combine several csv files into one then - 
-1. Put all csv that you want to combine in a folder.
-2. Go to that folder
-3. Make a newFolder.
-3. Command for Windows -
+- Put all csv that you want to combine in a folder.
+- Go to that folder
+- Make a newFolder.
+- Command for Windows -
   ```
   type *.csv > newFolder/mergedBugList.csv
   ```
+  
   Command for Linux - 
   ```
   cat *.csv > newFolder/mergedBugList.csv
   ```
+  
 ##### Manually re-formatting csv Buglist
 The csv files need a little bit of reformatting in order to be compatible with all 3 kind of databases supported by bugzilla-crawler.
 - There must be no header in csv file, i.e, No first line as column label.
@@ -52,6 +57,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   29901,https://bz.apache.org/bugzilla,,,,,,PENDING
   ...
   ```
+
   ***Note* - This format is compatible with all 3 kinds of database.**
 - If you use **MySql** or **PostgreSql**, your csv files should atleast have data till **second column**. For example - 
   ```
@@ -59,6 +65,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   29901,https://bz.apache.org/bugzilla
   ...
   ```
+
   ***Note* - This csv format is not compatible with sqlite database.**  
 ## Creating database
 ##### MySQL
@@ -68,22 +75,26 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ```
   mysql --host=<hostname> --user=<username> --password=<password> < "<path to cloned github directory>/Database/MySQL Database Schema.sql"
   ```
-    ***Note* - If you are creating database on local machine, then hostname is "locahost".**  
+  
+  ***Note* - If you are creating database on local machine, then hostname is "locahost".**  
 ##### SqLite
 - Download sqlite shell from [here](https://www.sqlite.org/download.html)
 - Run sqlite3 shell
 - Make a new database
   ```
   .open "<path to database>/<database name>.db"
-  ```
+  ```  
+  
 - Use the following command to create schema - 
   ```
   .read "<path to cloned github directory>/Database/SQLite Database Schema.sql"
-  ```
+  ```  
+  
 - Exit the shell
   ```
   .exit
-  ```
+  ```  
+  
 ## Importing buglist in database
 ***Note* - If you use MySql or PostgreSql, you can skip this section.**  
 SqLite doesn't have statements to import data from csv. However, its shell provide "limited" features to import data directly from csv (only if you have data in correct format, Thanks to the steps above ;P).   
@@ -91,20 +102,24 @@ SqLite doesn't have statements to import data from csv. However, its shell provi
 - Open your database
   ```
   .open "<path to database>/<database name>.db"
-  ```
+  ``` 
+  
 - Change mode to csv
   ```
   .mode csv
-  ```
+  ```  
+  
 - Import all csv files one by one using
   ```
   .import "<path to csvFolder>/file.csv"
-  ```
+  ```  
+  
   ***Note* - Take advantage of above steps to combine all csv files in one. That way, you can import all data in a single go.**
 - Exit the shell
   ```
   .exit
-  ```
+  ```  
+  
 ## Configuring bugzilla-crawler
 This is the final step where you tell bugzilla-crawler type of database, hostname, user, location of truststore, etc. Following are the params which need to be specified in **Config.java** -
 - ***SSL_TRUSTSTORE*** - Location of truststore where SSL certificates of bugzilla site are stored. If you are using the default Java truststore (cacert), then location of your truststore is **&lt;path to java&gt;/Java/jdk&lt;version&gt;/jre/lib/security/cacerts**
@@ -115,12 +130,14 @@ This is the final step where you tell bugzilla-crawler type of database, hostnam
 - ***DB_PORT*** - Port number on which your database server is running. By default port of MySql is **3306** and PostgreSql is **5432** (Unless Ofcourse, if you have changed it).
 - ***DB_NAME*** - Name of the database. In our schema creation sql we have used **CRAWLER**. Specify different name if you have changed the database name.
 - ***DB_USER*** - Username of the database user. This user must atleast have the privilege to SELECT and UPDATE the data and ALTER the schema.
-- ***DB_PASSWORD*** - Password of the database user.
+- ***DB_PASSWORD*** - Password of the database user.  
+
 ## Download dependencies and build using maven
 The following maven command would download all the dependencies first and then build bugzilla-crawler with the config data you specified in previous step.
 ```
 mvn clean install
 ```
+
 ## Start crawling
 You can specify 2 **optional** flags to start the crawler in different modes -  
 - ***-f &lt;path to csv folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
