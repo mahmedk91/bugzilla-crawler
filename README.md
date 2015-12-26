@@ -77,6 +77,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ```
   
   *Note - If you are creating database on local machine, then hostname is "locahost".*  
+  
 ##### SqLite
 - Download sqlite shell from [here](https://www.sqlite.org/download.html)
 - Run sqlite3 shell
