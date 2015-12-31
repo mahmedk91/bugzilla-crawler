@@ -66,16 +66,18 @@ The csv files need a little bit of reformatting in order to be compatible with a
   ```
 
   *Note - This csv format is not compatible with sqlite database.*  
+  
 ## Creating database
 ##### MySQL
 - Download MySql from [here](http://dev.mysql.com/downloads/mysql/)
 - Create a username and password
 - Use the following command to create schema - 
   ``` bash
-  mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_directory>/Database/MySQL Database Schema.sql"
+  mysql --host=<hostname> --user=<username> --password=<password> < "<path_to_cloned_github_repository>/Database/MySQL Database Schema.sql"
   ```
   
-  *Note - If you are creating database on local machine, then hostname is "locahost".*  
+  *Note - If you are creating database on local machine, then hostname is "localhost".*  
+  
 ##### SqLite
 - Download sqlite shell from [here](https://www.sqlite.org/download.html)
 - Run sqlite3 shell
@@ -86,7 +88,7 @@ The csv files need a little bit of reformatting in order to be compatible with a
   
 - Use the following command to create schema - 
   ``` bash
-  .read "<path_to_cloned_github_directory>/Database/SQLite Database Schema.sql"
+  .read "<path_to_cloned_github_repository>/Database/SQLite Database Schema.sql"
   ```  
   
 - Exit the shell
@@ -141,11 +143,11 @@ mvn clean install
 ## Start crawling
 You can specify 2 **optional** flags to start the crawler in different modes -  
 - ***-f &lt;path_to_csv_folder&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To upload bugs using csv files before starting to crawl.
-- ***-url &lt;bugzilla_website_url&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
+- ***-url &lt;bugzilla_website_url_without_trailing_/&gt;***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To crawl bugs of only this bugzilla project.  
 
 *Note - "-f" flag doesn't work for sqlite as bugs can only be imported manually in that case. Refer to the previous section on how to import bugs.*  
 
 Use the following maven command to start the crawler - 
 ``` bash
-mvn exec:java -Dexec.mainClass=saahil.hiwi.launcher.Launcher -Dexec.args="-f 'path_to_csvFolder' -url 'bugzilla_website_url'"
+mvn exec:java -Dexec.mainClass=saahil.hiwi.launcher.Launcher -Dexec.args="-f 'path_to_csvFolder' -url 'bugzilla_website_url_without_trailing_/'"
 ```
