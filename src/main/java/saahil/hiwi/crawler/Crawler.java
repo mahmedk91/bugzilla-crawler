@@ -28,7 +28,6 @@ public class Crawler {
         }
     } catch (SSLHandshakeException e){
       System.out.println("\nUnable to get bug info. You might have forgotten to add SSL Certificate in "+Config.SSL_TRUSTSTORE);
-      System.exit(0);
       return null;
     } catch (IOException e) {
       e.printStackTrace();

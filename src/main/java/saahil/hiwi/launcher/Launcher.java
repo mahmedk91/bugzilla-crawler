@@ -100,9 +100,9 @@ public class Launcher {
 
   private static void uploadBugs(String dataFolder) throws SQLException, IOException {
     System.out.println("-----------\nBugs Import\n-----------");
-    System.out.println("Dropping constraints for faster import..");
+    //System.out.println("Dropping constraints for faster import..");
+    //db.dropConstraints();
     System.out.println("Begin importing bugs...");
-    db.dropConstraints();
     File f = new File(dataFolder);
     FilenameFilter textFilter = new FilenameFilter() {
       public boolean accept(File dir, String name) {
@@ -117,8 +117,8 @@ public class Launcher {
           .println("Processing... [" + fileCount + "/" + files.length + "] - " + file.getName());
       db.importBugs(file.getCanonicalPath());
     }
-    System.out.println("Re-creating constraints...");
-    db.reCreateConstraints();
+    //System.out.println("Re-creating constraints...");
+    //db.reCreateConstraints();
     System.out.println("Bugs successfully imported!");
   }
 
